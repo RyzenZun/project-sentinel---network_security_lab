@@ -1,0 +1,92 @@
+ASA-HQ#show running-config
+ASA Version 8.4(2)
+!
+hostname ASA-HQ
+enable password O.zXWqZKXaRAqQdu encrypted
+passwd O.zXWqZKXaRAqQdu encrypted
+names
+!
+interface Ethernet0/0
+ switchport access vlan 2
+!
+interface Ethernet0/1
+ switchport access vlan 3
+!
+interface Ethernet0/2
+!
+interface Ethernet0/3
+!
+interface Ethernet0/4
+!
+interface Ethernet0/5
+!
+interface Ethernet0/6
+!
+interface Ethernet0/7
+!
+interface Vlan1
+ nameif inside
+ security-level 100
+ ip address 10.0.2.1 255.255.255.252
+!
+interface Vlan2
+ nameif outside
+ security-level 0
+ ip address 10.0.1.2 255.255.255.252
+!
+interface Vlan3
+ no forward interface Vlan1
+ nameif dmz
+ security-level 50
+ ip address 172.16.30.1 255.255.255.0
+!
+object network BRANCH-SUBNET
+ subnet 10.20.0.0 255.255.0.0
+object network HQ-SUBNET
+ subnet 10.10.0.0 255.255.0.0
+object network INSIDE-ALL
+ subnet 10.0.0.0 255.0.0.0
+!
+route outside 0.0.0.0 0.0.0.0 10.0.1.1 1
+route inside 10.10.10.0 255.255.255.0 10.0.2.2 1
+route inside 10.10.20.0 255.255.255.0 10.0.2.2 1
+route outside 10.20.10.0 255.255.255.0 10.0.1.1 1
+route outside 10.20.20.0 255.255.255.0 10.0.1.1 1
+!
+access-list VPN-EXEMPT extended permit ip 10.10.0.0 255.255.0.0 10.20.0.0 255.255.0.0
+access-list OUTSIDE-IN extended permit ip 10.20.0.0 255.255.0.0 10.10.0.0 255.255.0.0
+access-list OUTSIDE-IN extended permit ip 10.20.0.0 255.255.0.0 172.16.30.0 255.255.255.0
+access-list INSIDE-OUT extended permit ip 10.10.0.0 255.255.0.0 10.20.0.0 255.255.0.0
+access-list INSIDE-OUT extended permit ip 172.16.30.0 255.255.255.0 10.20.0.0 255.255.0.0
+!
+!
+access-group OUTSIDE-IN in interface outside
+aaa authentication telnet console LOCAL
+!
+username netadmin password O.zXWqZKXaRAqQdu encrypted
+!
+class-map inspection_default
+ match default-inspection-traffic
+!
+policy-map global_policy
+ class inspection_default
+  inspect dns 
+  inspect ftp 
+  inspect http 
+  inspect icmp 
+!
+service-policy global_policy global
+!
+telnet 10.10.20.0 255.255.255.0 inside
+telnet 10.10.10.0 255.255.255.0 inside
+telnet timeout 10
+ssh timeout 5
+!
+dhcpd auto_config outside
+!
+!
+!
+!
+!
+!
+ASA-HQ#

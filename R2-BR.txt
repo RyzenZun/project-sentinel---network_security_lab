@@ -1,0 +1,128 @@
+R2-BR#show running-config
+Building configuration...
+
+Current configuration : 1750 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R2-BR
+!
+!
+!
+enable secret 5 $1$mERr$NfJRL4XNWeyAOAORD0jBR/
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default group radius local 
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+username netadmin privilege 15 secret 5 $1$mERr$NfJRL4XNWeyAOAORD0jBR/
+!
+!
+license udi pid CISCO2901/K9 sn FTX15249ANU-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 172.16.100.2 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/0
+ tunnel destination 203.0.113.1
+!
+!
+interface GigabitEthernet0/0
+ description LINK-TO-ISP-R
+ ip address 198.51.100.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description LINK-TO-SW-BR
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.10
+ description BR-MGMT-VLAN 10
+ encapsulation dot1Q 10
+ ip address 10.20.10.1 255.255.255.0
+!
+interface GigabitEthernet0/1.20
+ description BR-USERS-VLAN 20
+ encapsulation dot1Q 20
+ ip address 10.20.20.1 255.255.255.0
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 198.51.100.2 
+ip route 10.10.10.0 255.255.255.0 172.16.100.1 
+ip route 10.10.20.0 255.255.255.0 172.16.100.1 
+ip route 10.0.1.0 255.255.255.252 172.16.100.1 
+ip route 172.16.30.0 255.255.255.0 172.16.100.1 
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^CProject Sentinel --- R2-BR Authorized Access Only^C
+!
+radius server 10.10.10.10
+ address ipv4 10.10.10.10 auth-port 1645
+ key Sentinel@2025
+!
+!
+!
+line con 0
+ password Sentinel@2025
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ password Sentinel@2025
+ transport input telnet
+!
+!
+!
+end
+
+
+R2-BR#

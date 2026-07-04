@@ -2,6 +2,8 @@
 
 > A dual-environment enterprise network security lab built entirely with open-source and free tools, demonstrating real-world network security architecture, centralized AAA/RADIUS authentication, GRE tunneling, perimeter firewalling, and DMZ segmentation across two simulated sites.
 
+## This Hands-On project was completed with some troubleshooting help from Anthropic Claude AI. 
+
 ---
 
 ## Table of Contents
@@ -675,11 +677,11 @@ The following connectivity tests were all verified successful:
 
 ---
 
-## Author
+## Author 
 
 **Ryzen**
-AAS Student — Cybersecurity and Network Administration
-South Puget Sound Community College
+Student — Cybersecurity and Network Administration
+@South Puget Sound Community College
 
 Pursuing a career in Network Security Engineering and Cybersecurity Engineering.
 
